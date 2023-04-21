@@ -229,6 +229,7 @@ const MainPage = () => {
         setOpenModalUnlinkSensor(false);
     };
 
+    console.log('first');
     const handleChangeTab = (_, value) => {
         setTab(value);
     };
