@@ -1,4 +1,5 @@
 import DeleteIcon from '@mui/icons-material/Delete';
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import {
     Box,
     Button,
@@ -9,8 +10,6 @@ import {
     TextField,
     useTheme,
 } from '@mui/material';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
 import { DataGrid } from '@mui/x-data-grid';
 import axios from 'axios';
 import { Formik } from 'formik';
@@ -29,6 +28,7 @@ import {
     addDevice,
     deviceApi,
     getAllDevices,
+    getAllRooms,
     linkDevice,
     updateDevice,
 } from '../../../../const/API';
@@ -49,7 +49,7 @@ const MainPage = () => {
     const colors = tokens(theme.palette.mode);
     const home = useSelector((state) => state.home);
     const currentHome = useSelector((state) => state.currentHome);
-    const rooms = useSelector((state) => state.rooms);
+    const [rooms, setRooms] = useState([]);
     const navigate = useNavigate();
     const [isAdd, setIsAdd] = useState(false);
     const [isReset, setIsReset] = useState(false);
@@ -58,6 +58,14 @@ const MainPage = () => {
     const [devices, setDevices] = useState([]);
     const [openModalLink, setOpenModalLink] = useState(false);
     const [selectedValueLink, setSelectedValueLink] = useState();
+
+    useEffect(() => {
+        (async () => {
+            const api = getAllRooms + home._id;
+            const res = await axios.get(api);
+            setRooms(res.data.rooms);
+        })();
+    }, [home._id]);
 
     const handleClickOpenModalLink = () => {
         setOpenModalLink(true);
@@ -162,9 +170,16 @@ const MainPage = () => {
                     <Box>
                         {access && <ButtonStyle name="LINK" width="75px" height="35px" />}
                         {relay && (
-                            <FormControlLabel
-                                value={relay.state}
-                                control={<Switch checked={relay.state} />}
+                            <LightbulbIcon
+                                color={relay?.state ? 'success' : 'disabled'}
+                                sx={{
+                                    flex: '1',
+                                    fontSize: '55px',
+                                    ':hover': {
+                                        cursor: 'pointer',
+                                        opacity: 0.9,
+                                    },
+                                }}
                             />
                         )}
                     </Box>

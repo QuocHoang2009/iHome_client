@@ -66,7 +66,7 @@ const ModalAddMember = (props) => {
             const api = getAllRooms + currentHome?.home;
             const res = await axios.get(api);
             if (res.data) {
-                setRooms(res.data);
+                setRooms(res.data.rooms);
             }
         })();
     }, [currentHome]);

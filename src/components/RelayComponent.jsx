@@ -1,5 +1,5 @@
-import { Box, Chip, FormControlLabel, Stack, Typography, useTheme } from '@mui/material';
-import Switch from '@mui/material/Switch';
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
+import { Box, Chip, Stack, Typography, useTheme } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -66,13 +66,26 @@ const RelayComponent = (props) => {
                     borderRadius="10px"
                     sx={{ backgroundColor: colors.blueAccent[700], pl: '10px', pr: '10px' }}
                 >
-                    <Typography variant="h3" sx={{ ml: '5px', flex: '3' }}>
+                    <Typography variant="h3" sx={{ ml: '5px', flex: '2' }}>
                         Relay
                     </Typography>
-                    <FormControlLabel
+                    <LightbulbIcon
+                        color={relay?.state ? 'success' : 'disabled'}
+                        // fontSize="large"
+                        onClick={handleChange}
+                        sx={{
+                            flex: '1',
+                            fontSize: '60px',
+                            ':hover': {
+                                cursor: 'pointer',
+                                opacity: 0.9,
+                            },
+                        }}
+                    />
+                    {/* <FormControlLabel
                         control={<Switch checked={relay?.state} onChange={handleChange} />}
                         sx={{ flex: '1' }}
-                    />
+                    /> */}
                     {currentHome?.access === ADMIN && (
                         <Chip label="Unlink" onClick={handleUnlink} sx={{ flex: '1' }} />
                     )}

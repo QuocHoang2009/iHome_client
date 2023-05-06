@@ -1,4 +1,5 @@
 import DeleteIcon from '@mui/icons-material/Delete';
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import {
     Box,
     Button,
@@ -10,8 +11,6 @@ import {
     Typography,
     useTheme,
 } from '@mui/material';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
 import { DataGrid } from '@mui/x-data-grid';
 import axios from 'axios';
 import { Formik } from 'formik';
@@ -31,6 +30,7 @@ import {
     disconnectButtonApi,
     disconnectRelay,
     editDevice,
+    getAllRooms,
     linkButtonApi,
     linkDevice,
     updateDevice,
@@ -53,7 +53,7 @@ const DevicePage = () => {
     const colors = tokens(theme.palette.mode);
     const home = useSelector((state) => state.home);
     const currentHome = useSelector((state) => state.currentHome);
-    const rooms = useSelector((state) => state.rooms);
+    const [rooms, setRooms] = useState([]);
     const [currentDevice, setCurrentDevice] = useState();
     const [isReset, setIsReset] = useState();
     const [openModal, setOpenModal] = useState(false);
@@ -63,6 +63,14 @@ const DevicePage = () => {
     const [openModalButton, setOpenModalButton] = useState(false);
     const [openButtonDisconnectModal, setOpenButtonDisconnectModal] = useState(false);
     const [isEdit, setIsEdit] = useState();
+
+    useEffect(() => {
+        (async () => {
+            const api = getAllRooms + home._id;
+            const res = await axios.get(api);
+            setRooms(res.data.rooms);
+        })();
+    }, [home._id]);
 
     const columns = [
         { field: 'id', headerName: 'ID' },
@@ -99,7 +107,17 @@ const DevicePage = () => {
             renderCell: ({ row: { state } }) => {
                 return (
                     <Box>
-                        <FormControlLabel value={state} control={<Switch checked={state} />} />
+                        <LightbulbIcon
+                            color={state ? 'success' : 'disabled'}
+                            sx={{
+                                flex: '1',
+                                fontSize: '55px',
+                                ':hover': {
+                                    cursor: 'pointer',
+                                    opacity: 0.9,
+                                },
+                            }}
+                        />
                     </Box>
                 );
             },
@@ -157,7 +175,7 @@ const DevicePage = () => {
             headerName: 'Room',
             flex: 1,
             renderCell: ({ row: { room } }) => {
-                const roomRes = rooms.find((roomSelect) => {
+                const roomRes = rooms?.find((roomSelect) => {
                     return room?._id === roomSelect?.room;
                 });
                 return <Box>{roomRes?.name}</Box>;
@@ -461,10 +479,10 @@ const DevicePage = () => {
                                             error={Boolean(touched.room) && Boolean(errors.room)}
                                             sx={{ gridColumn: 'span 4' }}
                                         >
-                                            {rooms.map((room, key) => {
+                                            {rooms?.map((room, key) => {
                                                 return (
-                                                    <MenuItem value={room._id} key={key}>
-                                                        {room.name}
+                                                    <MenuItem value={room?._id} key={key}>
+                                                        {room?.name}
                                                     </MenuItem>
                                                 );
                                             })}

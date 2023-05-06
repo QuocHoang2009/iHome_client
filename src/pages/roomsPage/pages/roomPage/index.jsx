@@ -1,6 +1,5 @@
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import { Box, Stack, Tab, Tabs } from '@mui/material';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -89,9 +88,16 @@ const RoomPage = () => {
                     <Box>
                         {access && <ButtonStyle name="LINK" width="75px" height="35px" />}
                         {relay && (
-                            <FormControlLabel
-                                value={relay.state}
-                                control={<Switch checked={relay.state} />}
+                            <LightbulbIcon
+                                color={relay?.state ? 'success' : 'disabled'}
+                                sx={{
+                                    flex: '1',
+                                    fontSize: '55px',
+                                    ':hover': {
+                                        cursor: 'pointer',
+                                        opacity: 0.9,
+                                    },
+                                }}
                             />
                         )}
                     </Box>
