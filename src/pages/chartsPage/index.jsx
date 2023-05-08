@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Stack } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -21,12 +21,12 @@ const ChartsPage = () => {
     }, [home._id, dispatch]);
 
     return (
-        <Box m="20px">
+        <Stack m="20px" spacing={3}>
             <HeaderChild title="Charts" subtitle="All charts here!" />
             {adeNodes?.map((node, key) => {
                 return <AdeChart key={key} address={node?.address} title={node.name} />;
             })}
-        </Box>
+        </Stack>
     );
 };
 

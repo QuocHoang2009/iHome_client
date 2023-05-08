@@ -1,5 +1,4 @@
 import DeleteIcon from '@mui/icons-material/Delete';
-import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import {
     Box,
     Button,
@@ -21,6 +20,7 @@ import { tokens } from '../../../../app/theme';
 import ButtonStyle from '../../../../components/ButtonStyle';
 import HeaderChild from '../../../../components/HeaderChild';
 import ModalDelete from '../../../../components/ModalDelete';
+import RelayComponent from '../../../../components/RelayComponent';
 import RelaysDialog from '../../../../components/RelaysDialog';
 import {
     ADMIN,
@@ -30,7 +30,6 @@ import {
     getAllDevices,
     getAllRooms,
     linkDevice,
-    updateDevice,
 } from '../../../../const/API';
 
 const initialValues = {
@@ -170,17 +169,18 @@ const MainPage = () => {
                     <Box>
                         {access && <ButtonStyle name="LINK" width="75px" height="35px" />}
                         {relay && (
-                            <LightbulbIcon
-                                color={relay?.state ? 'success' : 'disabled'}
-                                sx={{
-                                    flex: '1',
-                                    fontSize: '55px',
-                                    ':hover': {
-                                        cursor: 'pointer',
-                                        opacity: 0.9,
-                                    },
-                                }}
-                            />
+                            // <LightbulbIcon
+                            //     color={relay?.state ? 'success' : 'disabled'}
+                            //     sx={{
+                            //         flex: '1',
+                            //         fontSize: '55px',
+                            //         ':hover': {
+                            //             cursor: 'pointer',
+                            //             opacity: 0.9,
+                            //         },
+                            //     }}
+                            // />
+                            <RelayComponent channelId={relay._id} />
                         )}
                     </Box>
                 );
@@ -259,28 +259,6 @@ const MainPage = () => {
         setOpenModal(true);
     };
 
-    const handleChangeState = async (device) => {
-        const data = {
-            mqttPath: home?.mqttPath + '/control',
-            relay: device.relay,
-        };
-
-        await axios
-            .patch(updateDevice, {
-                body: data,
-            })
-            .then((res) => {
-                setIsReset(!isReset);
-            })
-            .catch((error) => {
-                if (error?.response) {
-                    console.log(error.response.data);
-                } else {
-                    console.log(error);
-                }
-            });
-    };
-
     const handleLink = (device) => {
         setDeviceSelect(device);
         handleClickOpenModalLink();
@@ -292,9 +270,7 @@ const MainPage = () => {
         } else if (params.field === 'name') {
             navigate('/devices/' + params.row._id);
         } else if (params.field === 'state') {
-            if (params.row.relay) {
-                handleChangeState(params.row);
-            } else {
+            if (!params.row.relay) {
                 if (currentHome?.access === ADMIN) handleLink(params.row);
             }
         }

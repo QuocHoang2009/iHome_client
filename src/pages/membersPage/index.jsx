@@ -1,6 +1,8 @@
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
+import DeleteIcon from '@mui/icons-material/Delete';
 import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 import SecurityOutlinedIcon from '@mui/icons-material/SecurityOutlined';
+
 import {
     Box,
     Button,
@@ -263,9 +265,11 @@ const MembersPage = () => {
     const [stateMember, setStateMember] = useState(true);
     const [usersFind, setUsersFind] = useState([]);
     const [isAddMember, setIsAddMember] = useState(false);
+    const [isReset, setIsReset] = useState(false);
     const [memberSelected, setMembersSelected] = useState({});
     const home = useSelector((state) => state.home);
     const members = useSelector((state) => state.members);
+    const user = useSelector((state) => state.user);
 
     useEffect(() => {
         (async () => {
@@ -275,10 +279,11 @@ const MembersPage = () => {
                 dispatch(setMembers({ members: res.data }));
             }
         })();
-    }, [home, dispatch, isAddMember]);
+    }, [home, dispatch, isAddMember, isReset]);
 
     const membersData = members.members?.map((member, index) => {
         return {
+            _id: member._id,
             id: index + 1,
             name: member.firstName + ' ' + member.lastName,
             age: member.age,
@@ -338,6 +343,24 @@ const MembersPage = () => {
                 );
             },
         },
+        {
+            field: 'delete',
+            headerName: 'Delete',
+            flex: 1,
+            renderCell: ({ row: { _id, access } }) => {
+                return (
+                    <Box
+                        sx={{
+                            '&:hover': {
+                                cursor: 'pointer',
+                            },
+                        }}
+                    >
+                        {access !== ADMIN && user._id !== _id && <DeleteIcon />}
+                    </Box>
+                );
+            },
+        },
     ];
 
     const columnsUser = [
@@ -366,8 +389,16 @@ const MembersPage = () => {
         setStateMember(!stateMember);
     };
 
-    const handleRowClick = (params) => {
-        console.log('rowClick');
+    const handleRowClick = async (params) => {
+        const dataUser = params.row;
+        console.log(dataUser);
+
+        if (dataUser.access !== ADMIN && user._id !== dataUser._id && params.field === 'delete') {
+            const api = memberHomeApi + '/' + home._id + '/' + dataUser._id;
+            const res = await axios.delete(api);
+            console.log(res);
+            setIsReset(!isReset);
+        }
     };
 
     const handleCloseModalAdd = () => {
@@ -461,8 +492,7 @@ const MembersPage = () => {
                         columns={columns}
                         pageSize={100}
                         rowsPerPageOptions={[100]}
-                        disableSelectionOnClick
-                        onRowClick={handleRowClick}
+                        onCellClick={handleRowClick}
                     />
                 </Box>
             ) : (
@@ -545,7 +575,6 @@ const MembersPage = () => {
                                 columns={columnsUser}
                                 pageSize={100}
                                 rowsPerPageOptions={[100]}
-                                disableSelectionOnClick
                                 onRowClick={addMemberHandle}
                             />
                         </Box>

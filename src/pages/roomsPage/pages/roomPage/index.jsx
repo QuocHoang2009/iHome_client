@@ -22,8 +22,8 @@ import { useTheme } from '@mui/system';
 import { DataGrid } from '@mui/x-data-grid';
 import { tokens } from '../../../../app/theme';
 import AdeChart from '../../../../components/AdeChart';
+import AdeComponent from '../../../../components/AdeComponent';
 import ModalDelete from '../../../../components/ModalDelete';
-import RelayComponent from '../../../../components/RelayComponent';
 import RelaysDialog from '../../../../components/RelaysDialog';
 import SensorComponent from '../../../../components/SensorComponent';
 import SensorsDialog from '../../../../components/SensorsDialog';
@@ -331,7 +331,7 @@ const RoomPage = () => {
 
             {tab === DASHBOARD ? (
                 <Stack direction="column" spacing="16px" width="100%" sx={{ mt: '16px' }}>
-                    <RelayComponent
+                    <AdeComponent
                         relayId={room?.relay}
                         handleLink={handleClickOpenModalLinkRelay}
                         handleUnlink={handleUnlinkRelay}

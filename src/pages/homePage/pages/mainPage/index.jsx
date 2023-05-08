@@ -7,9 +7,9 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { tokens } from '../../../../app/theme';
 import AdeChart from '../../../../components/AdeChart';
+import AdeComponent from '../../../../components/AdeComponent';
 import HeaderChild from '../../../../components/HeaderChild';
 import ModalDelete from '../../../../components/ModalDelete';
-import RelayComponent from '../../../../components/RelayComponent';
 import RelaysDialog from '../../../../components/RelaysDialog';
 import {
     USER,
@@ -306,7 +306,7 @@ const MainPage = () => {
 
             {tab === DASHBOARD ? (
                 <Stack direction="column" spacing="16px" width="100%">
-                    <RelayComponent
+                    <AdeComponent
                         relayId={home?.relay}
                         handleLink={handleClickOpenModalLinkRelay}
                         handleUnlink={handleUnlinkRelay}
