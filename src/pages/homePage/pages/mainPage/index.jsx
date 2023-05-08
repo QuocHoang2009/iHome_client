@@ -1,4 +1,5 @@
-import { Box, FormControlLabel, Stack, Switch, Tab, Tabs, useTheme } from '@mui/material';
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
+import { Box, Stack, Tab, Tabs, useTheme } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
@@ -6,12 +7,10 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { tokens } from '../../../../app/theme';
 import AdeChart from '../../../../components/AdeChart';
+import AdeComponent from '../../../../components/AdeComponent';
 import HeaderChild from '../../../../components/HeaderChild';
 import ModalDelete from '../../../../components/ModalDelete';
-import RelayComponent from '../../../../components/RelayComponent';
 import RelaysDialog from '../../../../components/RelaysDialog';
-import SensorComponent from '../../../../components/SensorComponent';
-import SensorsDialog from '../../../../components/SensorsDialog';
 import {
     USER,
     changeStateRelay,
@@ -19,9 +18,7 @@ import {
     getHome,
     getRelayChannel,
     linkHome,
-    linkHomeSensor,
     unLinkHome,
-    unLinkHomeSensor,
 } from '../../../../const/API';
 
 const DASHBOARD = 'Dashboard';
@@ -40,8 +37,8 @@ const MainPage = () => {
     const [selectedValueLink, setSelectedValueLink] = useState();
     const [openModalLinkRelay, setOpenModalLinkRelay] = useState(false);
     const [openModalUnlinkRelay, setOpenModalUnlinkRelay] = useState(false);
-    const [openModalLinkSensor, setOpenModalLinkSensor] = useState(false);
-    const [openModalUnlinkSensor, setOpenModalUnlinkSensor] = useState(false);
+    // const [openModalLinkSensor, setOpenModalLinkSensor] = useState(false);
+    // const [openModalUnlinkSensor, setOpenModalUnlinkSensor] = useState(false);
     const [tab, setTab] = useState(DASHBOARD);
 
     const columns = [
@@ -72,7 +69,8 @@ const MainPage = () => {
                 return (
                     <Box>
                         {relay && (
-                            <FormControlLabel value={state} control={<Switch checked={state} />} />
+                            // <FormControlLabel value={state} control={<Switch checked={state} />} />
+                            <LightbulbIcon />
                         )}
                     </Box>
                 );
@@ -88,13 +86,13 @@ const MainPage = () => {
                 if (res.data) setHome(res.data);
             }
         })();
-    }, [home?._id, isReset]);
+    }, [home?._id, isReset, currentHome]);
 
     useEffect(() => {
         (async () => {
             if (home?._id) {
                 const res = await axios.get(getAllRooms + home?._id);
-                setRooms(res.data);
+                setRooms(res.data.rooms);
             }
 
             if (currentHome?.access === USER) {
@@ -102,7 +100,7 @@ const MainPage = () => {
                 else setTab(ROOMSPAGE);
             }
         })();
-    }, [home?._id, navigate, currentHome?.access, currentHome?.rooms.length]);
+    }, [home?._id, navigate, currentHome]);
 
     useEffect(() => {
         (async () => {
@@ -173,63 +171,62 @@ const MainPage = () => {
         setOpenModalUnlinkRelay(true);
     };
 
-    const handleClickOpenModalLinkSensor = () => {
-        setOpenModalLinkSensor(true);
-    };
+    // const handleClickOpenModalLinkSensor = () => {
+    //     setOpenModalLinkSensor(true);
+    // };
 
-    const handleUnlinkSensor = () => {
-        setOpenModalUnlinkSensor(true);
-    };
+    // const handleUnlinkSensor = () => {
+    //     setOpenModalUnlinkSensor(true);
+    // };
 
-    const handleCloseModalLinkSensor = async (value) => {
-        setOpenModalLinkSensor(false);
-        if (value) {
-            setSelectedValueLink(value);
+    // const handleCloseModalLinkSensor = async (value) => {
+    //     setOpenModalLinkSensor(false);
+    //     if (value) {
+    //         setSelectedValueLink(value);
 
-            const data = {
-                home: home?._id,
-                sensor: value._id,
-            };
+    //         const data = {
+    //             home: home?._id,
+    //             sensor: value._id,
+    //         };
 
-            await axios
-                .patch(linkHomeSensor, {
-                    body: data,
-                })
-                .then((res) => {
-                    setIsReset(!isReset);
-                })
-                .catch((error) => {
-                    if (error?.response) {
-                        console.log(error.response.data);
-                    } else {
-                        console.log(error);
-                    }
-                });
-        }
-    };
+    //         await axios
+    //             .patch(linkHomeSensor, {
+    //                 body: data,
+    //             })
+    //             .then((res) => {
+    //                 setIsReset(!isReset);
+    //             })
+    //             .catch((error) => {
+    //                 if (error?.response) {
+    //                     console.log(error.response.data);
+    //                 } else {
+    //                     console.log(error);
+    //                 }
+    //             });
+    //     }
+    // };
 
-    const handleUnlinkHomeSensor = async () => {
-        const data = {
-            home: home._id,
-            sensor: home.sensor,
-        };
-        await axios
-            .patch(unLinkHomeSensor, { body: data })
-            .then((res) => {
-                setIsReset((prev) => !prev);
-                console.log(res.data);
-            })
-            .catch((error) => {
-                if (error?.response) {
-                    console.log(error.response.data);
-                } else {
-                    console.log(error);
-                }
-            });
-        setOpenModalUnlinkSensor(false);
-    };
+    // const handleUnlinkHomeSensor = async () => {
+    //     const data = {
+    //         home: home._id,
+    //         sensor: home.sensor,
+    //     };
+    //     await axios
+    //         .patch(unLinkHomeSensor, { body: data })
+    //         .then((res) => {
+    //             setIsReset((prev) => !prev);
+    //             console.log(res.data);
+    //         })
+    //         .catch((error) => {
+    //             if (error?.response) {
+    //                 console.log(error.response.data);
+    //             } else {
+    //                 console.log(error);
+    //             }
+    //         });
+    //     setOpenModalUnlinkSensor(false);
+    // };
 
-    console.log('first');
     const handleChangeTab = (_, value) => {
         setTab(value);
     };
@@ -298,27 +295,27 @@ const MainPage = () => {
                     handleDelete={handleUnlinkHomeRelay}
                 />
             )}
-            {openModalUnlinkSensor && (
+            {/* {openModalUnlinkSensor && (
                 <ModalDelete
                     open={openModalUnlinkSensor}
                     handleModal={setOpenModalUnlinkSensor}
                     name={'Unlink Sensor'}
                     handleDelete={handleUnlinkHomeSensor}
                 />
-            )}
+            )} */}
 
             {tab === DASHBOARD ? (
                 <Stack direction="column" spacing="16px" width="100%">
-                    <RelayComponent
+                    <AdeComponent
                         relayId={home?.relay}
                         handleLink={handleClickOpenModalLinkRelay}
                         handleUnlink={handleUnlinkRelay}
                     />
-                    <SensorComponent
+                    {/* <SensorComponent
                         sensorId={home?.sensor}
                         handleLink={handleClickOpenModalLinkSensor}
                         handleUnlink={handleUnlinkSensor}
-                    />
+                    /> */}
                     <AdeChart address={channel?.address} />
                 </Stack>
             ) : (
@@ -371,11 +368,11 @@ const MainPage = () => {
                 open={openModalLinkRelay}
                 onClose={handleCloseModalLinkRelay}
             />
-            <SensorsDialog
+            {/* <SensorsDialog
                 selectedValue={selectedValueLink}
                 open={openModalLinkSensor}
                 onClose={handleCloseModalLinkSensor}
-            />
+            /> */}
         </Box>
     );
 };

@@ -26,6 +26,7 @@ const SensorComponent = (props) => {
                 const apiGetSensor = nodeApi + sensorId;
                 const res = await axios.get(apiGetSensor);
                 if (res.data) {
+                    res.data.airquality = res.data.airquality * 10000;
                     setSensor(res.data?.node);
                 }
             } else {
@@ -86,7 +87,7 @@ const SensorComponent = (props) => {
                         />
                         <CardCustom
                             title="Air quality"
-                            value={value?.airquality.toFixed(7)}
+                            value={value?.airquality.toFixed(5) + ' ppm'}
                             Icon={<AirOutlinedIcon sx={{ fontSize: '60px' }} />}
                         />
                     </Stack>

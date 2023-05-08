@@ -1,7 +1,6 @@
 import DeleteIcon from '@mui/icons-material/Delete';
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import { Box, Button, TextField, useTheme } from '@mui/material';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
 import { DataGrid } from '@mui/x-data-grid';
 import axios from 'axios';
 import { Formik } from 'formik';
@@ -84,14 +83,19 @@ const MainPage = () => {
             if (home?._id) {
                 const apiGetRooms = getAllRooms + home?._id;
                 const res = await axios.get(apiGetRooms);
+                let roomsTemp = res.data.rooms.map((room, index) => {
+                    room.relay = res.data.relays[index];
+                    return room;
+                });
+
                 if (currentHome?.access === 'user' && currentHome?.rooms.length !== 0) {
-                    const roomsTmp = res.data?.filter(
+                    const roomsTmp = roomsTemp?.filter(
                         (room) =>
                             currentHome?.rooms?.findIndex((roomId) => room?._id === roomId) !== -1,
                     );
                     setRoomsPage(roomsTmp);
                 } else {
-                    setRoomsPage(res.data);
+                    setRoomsPage(roomsTemp);
                 }
             }
         })();
@@ -127,9 +131,16 @@ const MainPage = () => {
                     <Box>
                         {access && <ButtonStyle name="LINK" width="75px" height="35px" />}{' '}
                         {relay && (
-                            <FormControlLabel
-                                value={relay.state}
-                                control={<Switch checked={relay.state} />}
+                            <LightbulbIcon
+                                color={relay?.state ? 'success' : 'disabled'}
+                                sx={{
+                                    flex: '1',
+                                    fontSize: '55px',
+                                    ':hover': {
+                                        cursor: 'pointer',
+                                        opacity: 0.9,
+                                    },
+                                }}
                             />
                         )}
                     </Box>
@@ -213,7 +224,7 @@ const MainPage = () => {
             mqttPath: home?.mqttPath,
         };
 
-        const api = changeStateRelay + room.relay;
+        const api = changeStateRelay + room.relay._id;
 
         await axios
             .patch(api, {

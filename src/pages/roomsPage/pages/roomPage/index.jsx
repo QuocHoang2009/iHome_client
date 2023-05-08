@@ -1,6 +1,5 @@
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import { Box, Stack, Tab, Tabs } from '@mui/material';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -23,8 +22,8 @@ import { useTheme } from '@mui/system';
 import { DataGrid } from '@mui/x-data-grid';
 import { tokens } from '../../../../app/theme';
 import AdeChart from '../../../../components/AdeChart';
+import AdeComponent from '../../../../components/AdeComponent';
 import ModalDelete from '../../../../components/ModalDelete';
-import RelayComponent from '../../../../components/RelayComponent';
 import RelaysDialog from '../../../../components/RelaysDialog';
 import SensorComponent from '../../../../components/SensorComponent';
 import SensorsDialog from '../../../../components/SensorsDialog';
@@ -89,9 +88,16 @@ const RoomPage = () => {
                     <Box>
                         {access && <ButtonStyle name="LINK" width="75px" height="35px" />}
                         {relay && (
-                            <FormControlLabel
-                                value={relay.state}
-                                control={<Switch checked={relay.state} />}
+                            <LightbulbIcon
+                                color={relay?.state ? 'success' : 'disabled'}
+                                sx={{
+                                    flex: '1',
+                                    fontSize: '55px',
+                                    ':hover': {
+                                        cursor: 'pointer',
+                                        opacity: 0.9,
+                                    },
+                                }}
                             />
                         )}
                     </Box>
@@ -325,7 +331,7 @@ const RoomPage = () => {
 
             {tab === DASHBOARD ? (
                 <Stack direction="column" spacing="16px" width="100%" sx={{ mt: '16px' }}>
-                    <RelayComponent
+                    <AdeComponent
                         relayId={room?.relay}
                         handleLink={handleClickOpenModalLinkRelay}
                         handleUnlink={handleUnlinkRelay}
