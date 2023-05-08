@@ -1,4 +1,3 @@
-import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import { Box, Stack, Tab, Tabs, useTheme } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import axios from 'axios';
@@ -10,10 +9,10 @@ import AdeChart from '../../../../components/AdeChart';
 import AdeComponent from '../../../../components/AdeComponent';
 import HeaderChild from '../../../../components/HeaderChild';
 import ModalDelete from '../../../../components/ModalDelete';
+import RelayComponent from '../../../../components/RelayComponent';
 import RelaysDialog from '../../../../components/RelaysDialog';
 import {
     USER,
-    changeStateRelay,
     getAllRooms,
     getHome,
     getRelayChannel,
@@ -66,14 +65,7 @@ const MainPage = () => {
             headerName: 'State',
             flex: 1,
             renderCell: ({ row: { relay, state } }) => {
-                return (
-                    <Box>
-                        {relay && (
-                            // <FormControlLabel value={state} control={<Switch checked={state} />} />
-                            <LightbulbIcon />
-                        )}
-                    </Box>
-                );
+                return <Box>{relay && <RelayComponent channelId={relay} />}</Box>;
             },
         },
     ];
@@ -231,39 +223,9 @@ const MainPage = () => {
         setTab(value);
     };
 
-    const handleChangeState = async (room) => {
-        const data = {
-            mqttPath: home?.mqttPath + '/control',
-            relay: room.relay,
-            id: room._id,
-            state: !room.state,
-        };
-
-        const api = changeStateRelay + room.relay;
-
-        await axios
-            .patch(api, {
-                body: data,
-            })
-            .then((res) => {
-                setIsReset(!isReset);
-            })
-            .catch((error) => {
-                if (error?.response) {
-                    console.log(error.response.data);
-                } else {
-                    console.log(error);
-                }
-            });
-    };
-
     const handleClick = (params) => {
         if (params.field === 'name') {
             navigate('/rooms/' + params.row._id);
-        } else if (params.field === 'state') {
-            if (params.row.relay) {
-                handleChangeState(params.row);
-            }
         }
     };
 

@@ -1,11 +1,11 @@
-import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import { Box, Chip, Stack, Typography, useTheme } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { tokens } from '../app/theme';
-import { ADMIN, changeStateRelay, getRelayChannel } from '../const/API';
+import { ADMIN, getRelayChannel } from '../const/API';
 import ButtonStyle from './ButtonStyle';
+import RelayComponent from './RelayComponent';
 
 const AdeComponent = (props) => {
     const relayId = props.relayId;
@@ -13,10 +13,8 @@ const AdeComponent = (props) => {
     const handleUnlink = props.handleUnlink;
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-    const home = useSelector((state) => state.home);
     const currentHome = useSelector((state) => state.currentHome);
 
-    const [isReset, setIsReset] = useState(false);
     const [relay, setRelay] = useState();
 
     useEffect(() => {
@@ -29,29 +27,7 @@ const AdeComponent = (props) => {
                 setRelay(null);
             }
         })();
-    }, [relayId, isReset]);
-
-    const handleChange = async () => {
-        const api = changeStateRelay + relay?._id;
-        const data = {
-            mqttPath: home.mqttPath,
-        };
-
-        await axios
-            .patch(api, {
-                body: data,
-            })
-            .then((res) => {
-                setIsReset(!isReset);
-            })
-            .catch((error) => {
-                if (error?.response) {
-                    console.log(error.response.data);
-                } else {
-                    console.log(error);
-                }
-            });
-    };
+    }, [relayId]);
 
     const linkButton = !relay && currentHome?.access === ADMIN;
 
@@ -69,23 +45,7 @@ const AdeComponent = (props) => {
                     <Typography variant="h3" sx={{ ml: '5px', flex: '2' }}>
                         Relay
                     </Typography>
-                    <LightbulbIcon
-                        color={relay?.state ? 'success' : 'disabled'}
-                        // fontSize="large"
-                        onClick={handleChange}
-                        sx={{
-                            flex: '1',
-                            fontSize: '60px',
-                            ':hover': {
-                                cursor: 'pointer',
-                                opacity: 0.9,
-                            },
-                        }}
-                    />
-                    {/* <FormControlLabel
-                        control={<Switch checked={relay?.state} onChange={handleChange} />}
-                        sx={{ flex: '1' }}
-                    /> */}
+                    <RelayComponent channelId={relay._id} />
                     {currentHome?.access === ADMIN && (
                         <Chip label="Unlink" onClick={handleUnlink} sx={{ flex: '1' }} />
                     )}

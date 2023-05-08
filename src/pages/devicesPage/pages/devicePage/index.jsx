@@ -1,5 +1,4 @@
 import DeleteIcon from '@mui/icons-material/Delete';
-import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import {
     Box,
     Button,
@@ -16,13 +15,14 @@ import axios from 'axios';
 import { Formik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import * as yup from 'yup';
 import { tokens } from '../../../../app/theme';
 import BoxEdit from '../../../../components/BoxEdit';
 import ButtonsDialog from '../../../../components/ButtonsDialog';
 import HeaderChild from '../../../../components/HeaderChild';
 import ModalDelete from '../../../../components/ModalDelete';
+import RelayComponent from '../../../../components/RelayComponent';
 import RelaysDialog from '../../../../components/RelaysDialog';
 import {
     ADMIN,
@@ -33,7 +33,6 @@ import {
     getAllRooms,
     linkButtonApi,
     linkDevice,
-    updateDevice,
 } from '../../../../const/API';
 
 const initialValues = {
@@ -49,7 +48,6 @@ const checkoutSchema = yup.object().shape({
 const DevicePage = () => {
     const params = useParams();
     const theme = useTheme();
-    const navigate = useNavigate();
     const colors = tokens(theme.palette.mode);
     const home = useSelector((state) => state.home);
     const currentHome = useSelector((state) => state.currentHome);
@@ -104,22 +102,8 @@ const DevicePage = () => {
             field: 'state',
             headerName: 'State',
             flex: 1,
-            renderCell: ({ row: { state } }) => {
-                return (
-                    <Box>
-                        <LightbulbIcon
-                            color={state ? 'success' : 'disabled'}
-                            sx={{
-                                flex: '1',
-                                fontSize: '55px',
-                                ':hover': {
-                                    cursor: 'pointer',
-                                    opacity: 0.9,
-                                },
-                            }}
-                        />
-                    </Box>
-                );
+            renderCell: ({ row: { _id } }) => {
+                return <RelayComponent channelId={_id} />;
             },
         },
         {
@@ -228,28 +212,6 @@ const DevicePage = () => {
         setOpenModal(true);
     };
 
-    const handleChangeState = async () => {
-        const data = {
-            mqttPath: home.mqttPath + '/control',
-            relay: currentDevice.relay,
-        };
-
-        await axios
-            .patch(updateDevice, {
-                body: data,
-            })
-            .then((res) => {
-                setIsReset(!isReset);
-            })
-            .catch((error) => {
-                if (error?.response) {
-                    console.log(error.response.data);
-                } else {
-                    console.log(error);
-                }
-            });
-    };
-
     const handleClickOpenModalLink = () => {
         setOpenModalLink(true);
     };
@@ -334,10 +296,6 @@ const DevicePage = () => {
     const handleClick = (params) => {
         if (params.field === 'delete' && currentHome?.access === ADMIN) {
             handleDelete(params.row);
-        } else if (params.field === 'name' && currentHome?.access === ADMIN) {
-            navigate('/nodes/' + params.row._id);
-        } else if (params.field === 'state') {
-            handleChangeState(params.row);
         }
     };
 
