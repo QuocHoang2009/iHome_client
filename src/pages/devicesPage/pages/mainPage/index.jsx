@@ -168,20 +168,7 @@ const MainPage = () => {
                 return (
                     <Box>
                         {access && <ButtonStyle name="LINK" width="75px" height="35px" />}
-                        {relay && (
-                            // <LightbulbIcon
-                            //     color={relay?.state ? 'success' : 'disabled'}
-                            //     sx={{
-                            //         flex: '1',
-                            //         fontSize: '55px',
-                            //         ':hover': {
-                            //             cursor: 'pointer',
-                            //             opacity: 0.9,
-                            //         },
-                            //     }}
-                            // />
-                            <RelayComponent channelId={relay._id} />
-                        )}
+                        {relay && <RelayComponent channelId={relay._id} />}
                     </Box>
                 );
             },
