@@ -1,4 +1,4 @@
-const host = 'http://localhost:3001';
+export const host = 'http://localhost:3001';
 
 //login
 export const registerUser = host + '/auth/register';

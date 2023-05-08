@@ -1,8 +1,9 @@
 import { Stack, useTheme } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { io } from 'socket.io-client';
 import { tokens } from '../app/theme';
-import { getAdeInfor } from '../const/API';
+import { getAdeInfor, host } from '../const/API';
 import ChartComponent from './ChartComponent';
 import HeaderChild from './HeaderChild';
 
@@ -34,6 +35,14 @@ const AdeChart = (props) => {
             }
         })();
     }, [address]);
+
+    useEffect(() => {
+        const socket = io.connect(host);
+        socket.on(`changeAde/${address}`, (adeUpdate) => {
+            setData([...data, adeUpdate]);
+            setTime([...time, adeUpdate?.createdAt]);
+        });
+    }, [address, time, data]);
 
     const powerData = [
         {
