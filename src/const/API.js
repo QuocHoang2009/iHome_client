@@ -57,9 +57,6 @@ export const getAllMembers = host + '/members/all/';
 export const getMembersByEmail = host + '/members/findbyemail';
 export const memberHomeApi = host + '/members';
 
-//img http://localhost:3001/assets/
-export const getImg = `http://localhost:3001/assets/`;
-
 export const ADMIN = 'admin';
 export const MANAGER = 'manager';
 export const USER = 'user';

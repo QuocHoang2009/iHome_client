@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { setIsCollapsed, setSelected } from '../app/state';
 import { tokens } from '../app/theme';
-import { ADMIN, USER, getImg } from '../const/API';
+import { ADMIN, USER } from '../const/API';
 import sidebarItems from '../const/sidebarItems';
 
 import axios from 'axios';
@@ -22,6 +22,7 @@ const Item = ({ title, to, icon }) => {
     const selected = useSelector((state) => state.selected);
     const currentHome = useSelector((state) => state.currentHome);
     const dispatch = useDispatch();
+
     if (title !== 'Nodes' && title !== 'Members' && title !== 'Charts' && title !== 'Home') {
         return (
             <MenuItem
@@ -115,7 +116,7 @@ const Sidebar = (props) => {
 
     useEffect(() => {
         (async () => {
-            const api = getHome + currentHome.home;
+            const api = getHome + currentHome?.home;
             const res = await axios.get(api);
             if (res.data) {
                 dispatch(setHome({ home: res.data }));
@@ -202,7 +203,7 @@ const Sidebar = (props) => {
                                 alt="profile-user"
                                 width="50px"
                                 height="50px"
-                                src={getImg + `${home?.picturePath}`}
+                                src={home?.picturePath}
                                 style={{ cursor: 'pointer', borderRadius: '50%' }}
                             />
                         </Box>
@@ -223,7 +224,7 @@ const Sidebar = (props) => {
                                     alt="profile-user"
                                     width="100px"
                                     height="100px"
-                                    src={getImg + `${home?.picturePath}`}
+                                    src={home?.picturePath}
                                     style={{ cursor: 'pointer', borderRadius: '50%' }}
                                 />
                             </Box>
