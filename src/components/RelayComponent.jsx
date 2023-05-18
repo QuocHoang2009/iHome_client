@@ -3,7 +3,8 @@ import { Box } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { changeStateRelay, getRelayChannel } from '../const/API';
+import { io } from 'socket.io-client';
+import { changeStateRelay, getRelayChannel, host } from '../const/API';
 
 const RelayComponent = (props) => {
     const { channelId } = props;
@@ -26,6 +27,14 @@ const RelayComponent = (props) => {
             }
         })();
     }, [channelId, isReset]);
+
+    useEffect(() => {
+        const socket = io.connect(host);
+
+        socket.on(`changetele/${channel?._id}`, (data) => {
+            setChannel(data);
+        });
+    }, [channel]);
 
     const handleChange = async () => {
         const api = changeStateRelay + channel?._id;

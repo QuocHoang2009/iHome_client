@@ -5,8 +5,9 @@ import { Box, Chip, Stack, Typography, useTheme } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { io } from 'socket.io-client';
 import { tokens } from '../app/theme';
-import { ADMIN, getSensorInfo, nodeApi } from '../const/API';
+import { ADMIN, getSensorInfo, host, nodeApi } from '../const/API';
 import ButtonStyle from './ButtonStyle';
 import CardCustom from './CardCustom';
 
@@ -34,6 +35,14 @@ const SensorComponent = (props) => {
             }
         })();
     }, [sensorId]);
+
+    useEffect(() => {
+        const socket = io.connect(host);
+
+        socket.on(`changeSensor/${sensor?.address}`, (data) => {
+            setSensor(data);
+        });
+    }, [sensor]);
 
     useEffect(() => {
         (async () => {
