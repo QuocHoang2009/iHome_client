@@ -1,4 +1,4 @@
-const host = 'https://ihome.onrender.com';
+export const host = 'https://ihome.onrender.com';
 
 //login
 export const registerUser = host + '/auth/register';
